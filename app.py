@@ -1,31 +1,18 @@
 import random
-from collections.abc import Iterator
-from typing import NamedTuple
 
 from faker import Faker
 from flask import Flask
 from webargs import fields
 from webargs.flaskparser import use_args
 
+from application.services import generate_humans
+from application.typing import T_ITERATOR_WITH_INTEGERS
+
 app = Flask(__name__)
 faker = Faker("uk_UA")
 
 
-class Human(NamedTuple):
-    name: str
-    age: int
-
-
-def generate_human() -> Human:
-    return Human(name=faker.first_name(), age=random.randint(10, 100))
-
-
-def generate_humans(amount: int = 10) -> Iterator[Human]:
-    for _ in range(amount):
-        yield generate_human()
-
-
-def get_items_as_iterator(amount: int = 20) -> Iterator[int]:
+def get_items_as_iterator(amount: int = 20) -> T_ITERATOR_WITH_INTEGERS:
     return (random.randint(0, 100) for _ in range(amount))
 
 
