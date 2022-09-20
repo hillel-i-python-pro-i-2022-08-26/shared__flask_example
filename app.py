@@ -1,11 +1,28 @@
 import random
 from collections.abc import Iterator
+from typing import NamedTuple
 
+from faker import Faker
 from flask import Flask
 from webargs import fields
 from webargs.flaskparser import use_args
 
 app = Flask(__name__)
+faker = Faker("uk_UA")
+
+
+class Human(NamedTuple):
+    name: str
+    age: int
+
+
+def generate_human() -> Human:
+    return Human(name=faker.first_name(), age=random.randint(10, 100))
+
+
+def generate_humans(amount: int = 10) -> Iterator[Human]:
+    for _ in range(amount):
+        yield generate_human()
 
 
 def get_items_as_iterator(amount: int = 20) -> Iterator[int]:
@@ -13,12 +30,34 @@ def get_items_as_iterator(amount: int = 20) -> Iterator[int]:
 
 
 @app.route("/")
-def hello_world():  # put application's code here
+def hello_world():
     return "Hello World! 13"
 
 
+@app.route("/generate-humans")
+@use_args({"amount": fields.Int(missing=3)}, location="query")
+def generate_humans_view(args):
+    humans_amount = args["amount"]
+
+    list_items_formatted = "".join(
+        f"<li>{human.name} - {human.age}</li>" for human in generate_humans(amount=humans_amount)
+    )
+    return f"<ol>{list_items_formatted}</ol>"
+
+
+@app.route("/generate-humans-2")
+@app.route("/generate-humans-2/<int:amount>")
+def generate_humans_view_2(amount: int = 7):
+    humans_amount = amount
+
+    list_items_formatted = "".join(
+        f"<li>{human.name} - {human.age}</li>" for human in generate_humans(amount=humans_amount)
+    )
+    return f"<ol>{list_items_formatted}</ol>"
+
+
 @app.route("/example")
-def example():  # put application's code here
+def example():
     # [parse_input]-[BEGIN]
     # Nothing for now
     # [parse_input]-[END]
@@ -37,13 +76,13 @@ def example():  # put application's code here
 
 
 @app.route("/greetings/<name>/<int:age>")
-def greetings_by_path(name: str, age: int):  # put application's code here
+def greetings_by_path(name: str, age: int):
     return f"Hi, {name}. You are {age} old."
 
 
 @app.route("/greetings-2")
 @use_args({"name": fields.Str(required=True), "age": fields.Int(required=True)}, location="query")
-def greetings_by_query(args):  # put application's code here
+def greetings_by_query(args):
     name: str = args["name"]
     age: int = args["age"]
 
