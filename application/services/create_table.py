@@ -8,7 +8,7 @@ def create_table():
                 """
                 CREATE TABLE IF NOT EXISTS users (
                     pk INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                    name VARCHAR NOT NULL,
+                    name TEXT NOT NULL,
                     age INTEGER NOT NULL
                 )
             """
