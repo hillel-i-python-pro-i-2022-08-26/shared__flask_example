@@ -1,8 +1,8 @@
 import random
 from collections.abc import Iterator
 
-from app import faker
 from application.models import Human
+from application.services.faker import faker
 from application.typing import T_HUMAN
 
 
