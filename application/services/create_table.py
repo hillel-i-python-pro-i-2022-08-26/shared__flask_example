@@ -7,7 +7,7 @@ def create_table():
             connection.execute(
                 """
                 CREATE TABLE IF NOT EXISTS users (
-                    pk INTEGER NOT NULL PRIMARY KEY,
+                    pk INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                     name VARCHAR NOT NULL,
                     age INTEGER NOT NULL
                 )
